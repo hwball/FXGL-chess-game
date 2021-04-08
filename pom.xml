@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.almasb</groupId>
-    <artifactId>Drop</artifactId>
+    <groupId>com.hwball</groupId>
+    <artifactId>Chess</artifactId>
     <version>1.0</version>
 
     <properties>
@@ -79,7 +79,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>${jfx.maven.version}</version>
                 <configuration>
-                    <mainClass>drop.main/com.almasb.fxglgames.drop.DropApp</mainClass>
+                    <mainClass>chess.main/com.hwball.fxglgames.chess.ChessApp</mainClass>
                 </configuration>
             </plugin>
         </plugins>

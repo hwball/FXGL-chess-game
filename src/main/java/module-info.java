@@ -1,6 +1,6 @@
 /**
- * @author Almas Baimagambetov (almaslvl@gmail.com)
+ * @author Hamish Ball
  */
-open module drop.main {
+open module chess.main {
     requires com.almasb.fxgl.all;
 }
