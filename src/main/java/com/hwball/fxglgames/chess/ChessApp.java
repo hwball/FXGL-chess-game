@@ -17,6 +17,18 @@ import java.util.List;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
 
+/**
+ * TODO
+ *
+ * - keep track of game state with board when pieces move
+ * - create view components for all pieces
+ * - let pieces attack
+ * - implement turns
+ * - limit pieces moves based on other pieces
+ * 
+ *
+ */
+
 public class ChessApp extends GameApplication {
 
     private Entity[][] board = new Entity[8][8];
