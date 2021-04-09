@@ -2,10 +2,16 @@ package com.hwball.fxglgames.chess;
 
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
+import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.dsl.components.view.ChildViewComponent;
 import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.entity.SpawnData;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,8 +19,10 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
 
 public class ChessApp extends GameApplication {
 
+    private Entity[][] board = new Entity[8][8];
+
     public enum Type {
-        BOARD_SQUARE, PIECE
+        BOARD_SQUARE, PIECE, MOVE_MARKER
     }
 
     @Override
@@ -27,7 +35,8 @@ public class ChessApp extends GameApplication {
 
     @Override
     protected void initGame() {
-        drawBoard();
+        getGameWorld().addEntityFactory(new PieceFactory());
+//        drawBoard();
         spawnPieces();
     }
 
@@ -54,41 +63,60 @@ public class ChessApp extends GameApplication {
         List<String> sides = Arrays.asList("White", "Black");
         for (String side:sides) {
             //Pawns
+            int y = side.equals("White") ? 6 : 1;
             for (int columnCounter = 0; columnCounter < 8; columnCounter++) {
-                Entity pawn = entityBuilder()
-                        .type(Type.PIECE)
-                        .at((columnCounter+1) *100, side.equals("White") ? 700 : 200)
-                        .viewWithBBox(side + "_pawn.png")
-                        .buildAndAttach();
+                SpawnData data = new SpawnData(columnCounter * getAppWidth() / 8,
+                        y * getAppHeight() / 8);
+                data.put("side", side);
+                board[columnCounter][y] = spawn("pawn",data);
             }
 
-            spawnMinorPiece(side, 1, 8, "_rook.png");
-            spawnMinorPiece(side, 2, 7, "_knight.png");
-            spawnMinorPiece(side, 3, 6, "_bishop.png");
+            spawnMinorPiece(side, 0, 7, "rook");
+            spawnMinorPiece(side, 1,6, "knight");
+            spawnMinorPiece(side, 2, 5, "bishop");
 
-            spawnMajorPiece(side, 5, "_king.png");
-            spawnMajorPiece(side, 4, "_queen.png");
+            spawnMajorPiece(side, 4, "king");
+            spawnMajorPiece(side, 3, "queen");
 
         }
 
     }
 
-    private void spawnMinorPiece(String side, int leftCol, int rightCol, String assetName) {
-        for (int column:Arrays.asList(leftCol*100, rightCol*100)) {
-            Entity minorPiece = entityBuilder()
-                    .type(Type.PIECE)
-                    .at(column, side.equals("White") ? 800 : 100)
-                    .viewWithBBox(side + assetName)
-                    .buildAndAttach();
+    private void spawnMinorPiece(String side, int leftCol, int rightCol, String entityName) {
+        int y = side.equals("White") ? 7 : 0;
+        for (int column:Arrays.asList(leftCol, rightCol)) {
+            SpawnData data = new SpawnData(column * getAppWidth() / 8,
+                    y * getAppHeight() / 8);
+            data.put("side", side);
+            board[leftCol][y] = spawn(entityName, data);
         }
     }
 
-    private void spawnMajorPiece(String side, int col, String assetName) {
-            Entity MajorPiece = entityBuilder()
-                    .type(Type.PIECE)
-                    .at(col *100, side.equals("White") ? 800 : 100)
-                    .viewWithBBox(side + assetName)
-                    .buildAndAttach();
+    private void spawnMajorPiece(String side, int column, String entityName) {
+        int y = side.equals("White") ? 7 : 0;
+        SpawnData data = new SpawnData(column * getAppWidth() / 8,
+                y * getAppHeight() / 8);
+        data.put("side", side);
+        board[column][y] = spawn(entityName, data);
+    }
+
+    public void showAvailableMoves(Entity piece) {
+        for (Entity[] row:board) {
+            for (Entity boardPiece: row) {
+                if (boardPiece != null){
+                    boardPiece.getComponent(PawnViewComponent.class).cleanUpMoveMarkers();
+                }
+            }
+        }
+        List<SpawnData> dataL = piece.getComponent(PawnViewComponent.class).getAvailableMoves();
+        for (SpawnData data: dataL) {
+            Entity newMarker = spawn("marker", data);
+            piece.getComponent(PawnViewComponent.class).assignMarker(newMarker);
+        }
+    }
+
+    public void movePiece(Entity marker){
+        marker.getComponent(MarkerComponent.class).moveParent();
     }
 
     public static void main(String[] args) {
