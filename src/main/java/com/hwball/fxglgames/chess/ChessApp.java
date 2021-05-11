@@ -25,7 +25,7 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
  * - let pieces attack
  * - implement turns
  * - limit pieces moves based on other pieces
- * 
+ *
  *
  */
 
