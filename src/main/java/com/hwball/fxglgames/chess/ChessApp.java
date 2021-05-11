@@ -26,7 +26,6 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
  * - implement turns
  * - limit pieces moves based on other pieces
  *
- *
  */
 
 public class ChessApp extends GameApplication {
