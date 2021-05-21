@@ -79,7 +79,7 @@ public class ChessApp extends GameApplication {
                 SpawnData data = new SpawnData(columnCounter * getAppWidth() / 8,
                         y * getAppHeight() / 8);
                 data.put("side", side);
-                board[columnCounter][y] = spawn("pawn",data);
+                board[y][columnCounter] = spawn("pawn",data);
             }
 
             spawnMinorPiece(side, 0, 7, "rook");
@@ -99,7 +99,7 @@ public class ChessApp extends GameApplication {
             SpawnData data = new SpawnData(column * getAppWidth() / 8,
                     y * getAppHeight() / 8);
             data.put("side", side);
-            board[leftCol][y] = spawn(entityName, data);
+            board[y][column] = spawn(entityName, data);
         }
     }
 
@@ -108,7 +108,7 @@ public class ChessApp extends GameApplication {
         SpawnData data = new SpawnData(column * getAppWidth() / 8,
                 y * getAppHeight() / 8);
         data.put("side", side);
-        board[column][y] = spawn(entityName, data);
+        board[y][column] = spawn(entityName, data);
     }
 
     public void showAvailableMoves(Entity piece) {
@@ -119,7 +119,7 @@ public class ChessApp extends GameApplication {
                 }
             }
         }
-        List<SpawnData> dataL = piece.getComponent(PawnViewComponent.class).getAvailableMoves();
+        List<SpawnData> dataL = piece.getComponent(PawnViewComponent.class).getAvailableMoves(board);
         for (SpawnData data: dataL) {
             Entity newMarker = spawn("marker", data);
             piece.getComponent(PawnViewComponent.class).assignMarker(newMarker);
@@ -127,7 +127,7 @@ public class ChessApp extends GameApplication {
     }
 
     public void movePiece(Entity marker){
-        marker.getComponent(MarkerComponent.class).moveParent();
+        board = marker.getComponent(MarkerComponent.class).moveParent(board);
     }
 
     public static void main(String[] args) {

@@ -13,7 +13,7 @@ public class MarkerComponent extends ChildViewComponent {
         this.parentEntity = parentEntity;
     }
 
-    public void moveParent() {
-        parentEntity.getComponent(PawnViewComponent.class).move(this.getEntity().getX(), this.getEntity().getY());
+    public Entity[][] moveParent(Entity[][] board ) {
+        return parentEntity.getComponent(PawnViewComponent.class).move(this.getEntity().getX(), this.getEntity().getY(), board);
     }
 }
