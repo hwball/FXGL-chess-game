@@ -14,6 +14,9 @@ public class MarkerComponent extends ChildViewComponent {
     }
 
     public Entity[][] moveParent(Entity[][] board ) {
-        return parentEntity.getComponent(PawnViewComponent.class).move(this.getEntity().getX(), this.getEntity().getY(), board);
+        Entity[][] currentBoard = board;
+        if (board[(int) (this.getEntity().getY() / getAppHeight() * 8)][(int) (this.getEntity().getX() / getAppWidth() * 8)] != null)
+            currentBoard = board[(int) (this.getEntity().getY() / getAppHeight() * 8)][(int) (this.getEntity().getX() / getAppWidth() * 8)].getComponent(PieceViewComponent.class).die(board);
+        return parentEntity.getComponent(PieceViewComponent.class).move(this.getEntity().getX(), this.getEntity().getY(), currentBoard);
     }
 }

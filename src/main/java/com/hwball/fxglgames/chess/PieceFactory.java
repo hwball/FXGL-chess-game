@@ -9,7 +9,19 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.util.Arrays;
+
 import static com.almasb.fxgl.dsl.FXGLForKtKt.entityBuilder;
+
+/***
+ *       Move Map
+ *
+ *       t  f  y
+ *    a  j     k  o
+ *    l           r
+ *    z  n     m  p
+ *       c  b  v
+ */
 
 public class PieceFactory implements EntityFactory {
 
@@ -18,7 +30,7 @@ public class PieceFactory implements EntityFactory {
         String side = data.get("side");
         var newPawn = entityBuilder(data)
                 .type(ChessApp.Type.PIECE)
-                .with(new PawnViewComponent(side))
+                .with(new PieceViewComponent(side, Arrays.asList("f"), Arrays.asList("j", "k"), Arrays.asList("ff", "f"), true))
                 .viewWithBBox(side + "_pawn.png")
                 .build();
 
@@ -32,10 +44,12 @@ public class PieceFactory implements EntityFactory {
         String side = data.get("side");
         var newRook = entityBuilder(data)
                 .type(ChessApp.Type.PIECE)
-                .with(new PawnViewComponent(side))
+                .with(new PieceViewComponent(side, Util.buildFilesDirections(Arrays.asList("f", "l", "r", "b")), Util.buildFilesDirections(Arrays.asList("f", "l", "r", "b"))))
                 .viewWithBBox(side + "_rook.png")
                 .build();
 
+        newRook.getViewComponent().addEventHandler(MouseEvent.MOUSE_CLICKED,
+                e -> FXGL.<ChessApp>getAppCast().showAvailableMoves(newRook));
         return newRook;
     }
 
@@ -44,10 +58,12 @@ public class PieceFactory implements EntityFactory {
         String side = data.get("side");
         var newKnight = entityBuilder(data)
                 .type(ChessApp.Type.PIECE)
-                .with(new PawnViewComponent(side))
+                .with(new PieceViewComponent(side, Arrays.asList("t", "y", "o", "p", "v", "c", "z", "a"), Arrays.asList("t", "y", "o", "p", "v", "c", "z", "a")))
                 .viewWithBBox(side + "_knight.png")
                 .build();
 
+        newKnight.getViewComponent().addEventHandler(MouseEvent.MOUSE_CLICKED,
+                e -> FXGL.<ChessApp>getAppCast().showAvailableMoves(newKnight));
         return newKnight;
     }
 
@@ -56,10 +72,12 @@ public class PieceFactory implements EntityFactory {
         String side = data.get("side");
         var newBishop = entityBuilder(data)
                 .type(ChessApp.Type.PIECE)
-                .with(new PawnViewComponent(side))
+                .with(new PieceViewComponent(side, Util.buildFilesDirections(Arrays.asList("j", "k", "n", "m")), Util.buildFilesDirections(Arrays.asList("j", "k", "m", "n"))))
                 .viewWithBBox(side + "_bishop.png")
                 .build();
 
+        newBishop.getViewComponent().addEventHandler(MouseEvent.MOUSE_CLICKED,
+                e -> FXGL.<ChessApp>getAppCast().showAvailableMoves(newBishop));
         return newBishop;
     }
 
@@ -68,10 +86,12 @@ public class PieceFactory implements EntityFactory {
         String side = data.get("side");
         var newQueen = entityBuilder(data)
                 .type(ChessApp.Type.PIECE)
-                .with(new PawnViewComponent(side))
+                .with(new PieceViewComponent(side, Util.buildFilesDirections(Arrays.asList("f", "l", "r", "b", "j", "k", "n", "m")), Util.buildFilesDirections(Arrays.asList("f", "l", "r", "b", "j", "k", "m", "n"))))
                 .viewWithBBox(side + "_queen.png")
                 .build();
 
+        newQueen.getViewComponent().addEventHandler(MouseEvent.MOUSE_CLICKED,
+                e -> FXGL.<ChessApp>getAppCast().showAvailableMoves(newQueen));
         return newQueen;
     }
 
@@ -80,10 +100,12 @@ public class PieceFactory implements EntityFactory {
         String side = data.get("side");
         var newKing = entityBuilder(data)
                 .type(ChessApp.Type.PIECE)
-                .with(new PawnViewComponent(side))
+                .with(new PieceViewComponent(side, Arrays.asList("f", "l", "r", "b", "j", "k", "n", "m"), Arrays.asList("f", "l", "r", "b", "j", "k", "n", "m")))
                 .viewWithBBox(side + "_king.png")
                 .build();
 
+        newKing.getViewComponent().addEventHandler(MouseEvent.MOUSE_CLICKED,
+                e -> FXGL.<ChessApp>getAppCast().showAvailableMoves(newKing));
         return newKing;
     }
 

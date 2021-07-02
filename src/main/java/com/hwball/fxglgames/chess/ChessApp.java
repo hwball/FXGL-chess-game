@@ -2,16 +2,11 @@ package com.hwball.fxglgames.chess;
 
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
-import com.almasb.fxgl.dsl.FXGL;
-import com.almasb.fxgl.dsl.components.view.ChildViewComponent;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.SpawnData;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,17 +15,14 @@ import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
 /**
  * TODO
  *
- * - keep track of game state with board when pieces move
- * - create view components for all pieces
- * - let pieces attack
- * - implement turns
- * - limit pieces moves based on other pieces
- *
+ * - handle promoting
+ * - add win / loss / king rules
  */
 
 public class ChessApp extends GameApplication {
 
     private Entity[][] board = new Entity[8][8];
+    private boolean whiteTurn = true;
 
     public enum Type {
         BOARD_SQUARE, PIECE, MOVE_MARKER
@@ -90,7 +82,6 @@ public class ChessApp extends GameApplication {
             spawnMajorPiece(side, 3, "queen");
 
         }
-
     }
 
     private void spawnMinorPiece(String side, int leftCol, int rightCol, String entityName) {
@@ -115,19 +106,31 @@ public class ChessApp extends GameApplication {
         for (Entity[] row:board) {
             for (Entity boardPiece: row) {
                 if (boardPiece != null){
-                    boardPiece.getComponent(PawnViewComponent.class).cleanUpMoveMarkers();
+                    boardPiece.getComponent(PieceViewComponent.class).cleanUpMoveMarkers();
                 }
             }
         }
-        List<SpawnData> dataL = piece.getComponent(PawnViewComponent.class).getAvailableMoves(board);
-        for (SpawnData data: dataL) {
-            Entity newMarker = spawn("marker", data);
-            piece.getComponent(PawnViewComponent.class).assignMarker(newMarker);
+        PieceViewComponent component = piece.getComponent(PieceViewComponent.class);
+        if ((component.getSide().equals("White") && this.whiteTurn) || (component.getSide().equals("Black") && !this.whiteTurn)) {
+            List<SpawnData> dataL = component.getAvailableMoves(board);
+            for (SpawnData data: dataL) {
+                Entity newMarker = spawn("marker", data);
+                piece.getComponent(PieceViewComponent.class).assignMarker(newMarker);
+            }
         }
     }
 
     public void movePiece(Entity marker){
+        for (Entity[] row:board) {
+            for (Entity boardPiece: row) {
+                if (boardPiece != null){
+                    boardPiece.getComponent(PieceViewComponent.class).newTurn();
+                }
+            }
+        }
+
         board = marker.getComponent(MarkerComponent.class).moveParent(board);
+        this.whiteTurn = !this.whiteTurn;
     }
 
     public static void main(String[] args) {
